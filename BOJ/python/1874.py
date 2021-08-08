@@ -1,43 +1,32 @@
 """
 1873 - 스택수열
 https://www.acmicpc.net/problem/1873
+수정 21-08-08
 """
 
 import sys
 
 n = int(sys.stdin.readline())
+stack = []
+result = []
+count = 0
+status = True
+for _ in range(n):
+    num = int(sys.stdin.readline())
 
+    while count < num:
+        count += 1
+        stack.append(count)
+        result.append("+")
 
-def solution(n):
-    count, temp = 1, 1
-    stack = []
-    result = []
-    status = True
-    for _ in range(n):
-        data = int(sys.stdin.readline())
-        if data >= temp:
-            while data >= temp:
-                stack.append(count)
-                result.append("+")
-                count += 1
-                temp = count
-            temp = stack.pop()
-            result.append("-")
-        if data < temp:
-            if stack[-1] == data:
-                temp = stack.pop()
-                result.append("-")
-            else:
-                status = False
-    if status:
-        return result
+    if stack[-1] == num:
+        stack.pop()
+        result.append("-")
     else:
-        return False
+        status = False
 
-
-answer = solution(n)
-if answer:
-    for c in answer:
-        print(c)
-else:
+if not status:
     print("NO")
+else:
+    for i in result:
+        print(i)
