@@ -9,16 +9,11 @@ input = stdin.readline
 def isPrime(n):
 	if n == 1:
 		return False
-	for j in range(2, n-1):
+	for j in range(2, int(n**0.5)+1):
 		if n % j == 0:
 			return False
 	return True
 
 N = int(input())
 arr = list(map(int, input().split()))
-count = 0
-for i in arr:
-	if isPrime(i):
-		count += 1 
-		
-print(count)
+print(len([n for n in arr if isPrime(n)]))
