@@ -3,30 +3,27 @@
 https://www.acmicpc.net/problem/1074
 """
 
-from sys import stdin
-
-input = stdin.readline
-
 n, r, c = map(int, input().rsplit())
 cnt = 0
 
+while not (r == 0 and c == 0):
+    size = 2**(n - 1)
+    if 0 <= c < size and 0 <= r < size:
+        cnt += size * size * 0
 
-def search(y, x, n):
-    global cnt
-    if y == r and x == c:
-        print(cnt)
-        return
-    if not (y <= r < y + n and x <= c < x + n):
-        cnt += n * n
-        return
-    if n == 1:
-        cnt += 1
-        return
+    elif size <= c < size * 2 and 0 <= r < size:
+        c -= size
+        cnt += size * size * 1
 
-    search(y, x, n//2)
-    search(y, x+n//2, n//2)
-    search(y+n//2, x, n//2)
-    search(y+n//2, x+n//2, n//2)
+    elif 0 <= c < size and size <= r < size * 2:
+        r -= size
+        cnt += size * size * 2
 
+    elif size <= c < size * 2 and size <= r < size * 2:
+        c -= size
+        r -= size
+        cnt += size * size * 3
 
-search(0, 0, 2**n)
+    n -= 1
+
+print(cnt)

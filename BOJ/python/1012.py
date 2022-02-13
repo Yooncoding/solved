@@ -3,51 +3,43 @@
 https://www.acmicpc.net/problem/1012
 """
 
-from sys import stdin
 from collections import deque
 
-input = stdin.readline
 
+def bfs(y, x):
+    queue = deque()
+    queue.append([y, x])
+    dy, dx = [1, -1, 0, 0], [0, 0, 1, -1]
+    while len(queue) != 0:
+        y, x = queue.popleft()
+        if visited[y][x]:
+            continue
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < n and 0 <= nx < m and land[ny][nx] == 1:
+                if visited[ny][nx]:
+                    continue
+                queue.append([ny, nx])
+        visited[y][x] = True
 
-def bfs(x, y, l):
-    q = deque()
-    q.append([x, y])
-    while not len(q) == 0:
-        a, b = q.popleft()
-        l[b][a] = 0
-        if a > 0:
-            if l[b][a - 1]:
-                l[b][a - 1] = 0
-                q.append([a - 1, b])
-        if a < len(l[0]) - 1:
-            if l[b][a + 1]:
-                l[b][a + 1] = 0
-                q.append([a + 1, b])
-        if b > 0:
-            if l[b - 1][a]:
-                l[b - 1][a] = 0
-                q.append([a, b - 1])
-        if b < len(l) - 1:
-            if l[b + 1][a]:
-                l[b + 1][a] = 0
-                q.append([a, b + 1])
-
-    return 1
+    return
 
 
 for _ in range(int(input())):
-    M, N, K = map(int, input().rsplit())
-    land = [[0 for _ in range(M)] for _ in range(N)]
-
-    for _ in range(K):
-        X, Y = map(int, input().rsplit())
-        land[Y][X] = 1
-
+    m, n, k = map(int, input().rsplit())
+    land = [[0 for _ in range(m)] for _ in range(n)]
+    visited = [[False for _ in range(m)] for _ in range(n)]
     cnt = 0
 
-    for j in range(N):
-        for i in range(M):
-            if land[j][i] == 1:
-                cnt += bfs(i, j, land)
+    for _ in range(k):
+        x, y = map(int, input().rsplit())
+        land[y][x] = 1
+
+    for i in range(n):
+        for j in range(m):
+            if visited[i][j] or land[i][j] != 1:
+                continue
+            bfs(i, j)
+            cnt += 1
 
     print(cnt)

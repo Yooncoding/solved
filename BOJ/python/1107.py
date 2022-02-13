@@ -3,29 +3,17 @@
 https://www.acmicpc.net/problem/1107
 """
 
-from sys import stdin
+n = int(input())
+m = int(input())
+broken = input().rsplit() if m != 0 else []
 
-input = stdin.readline
-
-N = int(input())
-M = int(input())
-nums = list(map(int, input().split()))
-broken = [False] * 10
-for num in nums:
-    broken[num] = True
-
-cnt = N - 100 if N >= 100 else 100 - N
+ans = abs(n - 100)
 
 for i in range(1000000):
-    processing = True
-    temp = str(i)
-    for t in temp:
-        if broken[int(t)] == True:
-            processing = False
+    for j in str(i):
+        if j in broken:
             break
-    if processing == False:
-        continue
-    cnt = min(cnt, i - N +
-              len(temp)) if i >= N else min(cnt, N - i + len(temp))
+    else:
+        ans = min(ans, abs(n - i) + len(str(i)))
 
-print(cnt)
+print(ans)

@@ -3,16 +3,10 @@
 https://www.acmicpc.net/problem/1003
 """
 
-from sys import stdin
-
-input = stdin.readline
-
-fibo = [[1, 0], [0, 1], [1, 1]]
-for i in range(3, 41):
-    temp = [fibo[i - 2][0] + fibo[i - 1][0], fibo[i - 2][1] + fibo[i - 1][1]]
-    fibo.append(temp)
+dp = [(1, 0), (0, 1)] + [0 for _ in range(39)]
+for i in range(2, 41):
+    dp[i] = (dp[i - 2][0] + dp[i - 1][0], dp[i - 2][1] + dp[i - 1][1])
 
 for _ in range(int(input())):
-    N = int(input())
-    answer = fibo[N]
-    print(answer[0], answer[1])
+    n = int(input())
+    print(*dp[n])
