@@ -3,55 +3,56 @@
 https://www.acmicpc.net/problem/1260
 """
 
-from sys import stdin
-from collections import defaultdict
-
-input = stdin.readline
+from collections import defaultdict, deque
 
 
-def bfs(g, v, n):
-    q = [v]
-    visited = [0] * n
-    result = []
-    while len(q) != 0:
-        t = q.pop(0)
-        if visited[t - 1] == 1:
+def bfs(v):
+    visited = [False for _ in range(n + 1)]
+    q = deque()
+    ans = []
+    q.append(v)
+    while len(q):
+        v = q.popleft()
+        if visited[v]:
             continue
-        for p in g[t]:
-            q.append(p)
 
-        visited[t - 1] = 1
-        result.append(t)
+        for i in graph[v]:
+            if visited[i]:
+                continue
+            q.append(i)
+        visited[v] = True
+        ans.append(v)
+    return ans
 
-    return result
 
-
-def dfs(g, v, n, visited=None, result=None):
-    if result is None:
-        result = [v]
+def dfs(v, visited=None, ans=None):
     if visited is None:
-        visited = [0] * n
-        visited[v - 1] = 1
-    for i in g[v]:
-        if visited[i - 1] == 1:
+        visited = [False for _ in range(n + 1)]
+        visited[v] = True
+    if ans is None:
+        ans = [v]
+
+    for i in graph[v]:
+        if visited[i]:
             continue
-        result.append(i)
-        visited[i - 1] = 1
-        dfs(g, i, n, visited, result)
+        visited[i] = True
+        ans.append(i)
+        dfs(i, visited, ans)
 
-    return result
+    return ans
 
 
-N, M, V = map(int, input().split())
 graph = defaultdict(list)
 
-for _ in range(M):
-    a, b = map(int, input().split())
+n, m, v = map(int, input().rsplit())
+
+for _ in range(m):
+    a, b = map(int, input().rsplit())
     graph[a].append(b)
     graph[b].append(a)
 
-for k in graph.keys():
+for k in graph:
     graph[k].sort()
 
-print(*dfs(graph, V, N))
-print(*bfs(graph, V, N))
+print(*dfs(v))
+print(*bfs(v))
