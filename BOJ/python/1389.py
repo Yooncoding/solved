@@ -3,42 +3,39 @@
 https://www.acmicpc.net/problem/1389
 """
 
-from sys import stdin, maxsize
 from collections import defaultdict, deque
 
-input = stdin.readline
+
+graph = defaultdict(list)
+n, m = map(int, input().rsplit())
+
+for _ in range(m):
+    a, b = map(int, input().rsplit())
+    graph[a].append(b)
+    graph[b].append(a)
 
 
-def bfs(n):
-    visited = [False] + [False] * N
-    cnt = [0] + [0] * N
-
+def bfs(v):
+    visited = [False for _ in range(n + 1)]
+    visited[v] = True
+    cnt = [0 for _ in range(n + 1)]
     q = deque()
-    q.append(n)
-    visited[n] = True
+    q.append(v)
+    while len(q):
+        v = q.popleft()
 
-    while len(q) != 0:
-        t = q.popleft()
-        for p in relation[t]:
-            if visited[p] == True:
+        for t in graph[v]:
+            if visited[t]:
                 continue
-            cnt[p] = cnt[t] + 1
-            visited[p] = True
-            q.append(p)
+            q.append(t)
+            cnt[t] = cnt[v] + 1
+            visited[t] = True
 
     return sum(cnt)
 
 
-N, M = map(int, input().split())
-relation = defaultdict(list)
-answer = [maxsize] + [0] * N
+ans = []
+for i in range(n):
+    ans.append(bfs(i + 1))
 
-for _ in range(M):
-    u, v = map(int, input().split())
-    relation[u].append(v)
-    relation[v].append(u)
-
-for i in range(1, N + 1):
-    answer[i] = bfs(i)
-
-print(answer.index(min(answer)))
+print(ans.index(min(ans)) + 1)
