@@ -3,25 +3,24 @@
 https://www.acmicpc.net/problem/1463
 """
 
-from sys import stdin
-input = stdin.readline
+from collections import deque
 
-x = int(input())
-results = [x]
-count = 0
-while 1:
-    if x == 1:
+n = int(input())
+
+q = deque()
+q.append([n, 0])
+visited = [False for _ in range(n+1)]
+while len(q):
+    n, cnt = q.popleft()
+    if n == 1:
+        print(cnt)
         break
-    count += 1
-    temp = results
-    for i in range(len(temp)):
-        results.append(temp[i] - 1)
-        if temp[i] % 3 == 0:
-            results.append(temp[i] // 3)
-        if temp[i] % 2 == 0:
-            results.append(temp[i] // 2)
-        results = set(results)
-        results = list(results)
-    if min(results) == 1:
-        break
-print(count)
+    if not visited[n-1]:
+        q.append([n-1, cnt+1])
+        visited[n-1] = True
+    if n % 3 == 0 and not visited[n//3]:
+        visited[n//3] = True
+        q.append([n//3, cnt+1])
+    if n % 2 == 0 and not visited[n//2]:
+        visited[n//2] = True
+        q.append([n//2, cnt+1])
