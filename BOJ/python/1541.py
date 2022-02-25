@@ -3,38 +3,19 @@
 https://www.acmicpc.net/problem/1541
 """
 
-from sys import stdin
-
-input = stdin.readline
-
 expr = input().rstrip()
-tokens = []
-val = 0
+tokens = expr.split("-")
 
-for c in expr:
-    if c in "0123456789":
-        val = val * 10 + int(c)
-    else:
-        tokens.append(val)
-        val = 0
-        tokens.append(c)
-tokens.append(val)
-
-nums = []
-minus_flag = False
-temp = 0
+ans = 0
+flag = False
 for token in tokens:
-    if token == "-":
-        nums.append(-temp)
-        temp = 0
-        minus_flag = True
-    elif token == "+":
-        continue
+    if token == "":
+        pass
+    elif token.isdigit():
+        ans = ans - int(token) if flag else ans + int(token)
     else:
-        if minus_flag == True:
-            temp += token
-        else:
-            nums.append(token)
-nums.append(-temp)
+        temp = sum(map(int, token.split("+")))
+        ans = ans - temp if flag else ans + temp
+    flag = True
 
-print(sum(nums))
+print(ans)
