@@ -3,37 +3,29 @@
 https://www.acmicpc.net/problem/1780
 """
 
-from sys import stdin
 
-input = stdin.readline
-
-n = int(input())
-paper = []
-answer = [0, 0, 0]
-
-for _ in range(n):
-    paper.append(list(map(int, input().rsplit())))
-
-
-def cut(y, x, n):
-    global answer
-    for i in range(n):
-        for j in range(n):
-            if paper[y][x] != paper[y+i][x+j]:
-                n //= 3
-                cut(y, x, n)
-                cut(y+n, x, n)
-                cut(y+2*n, x, n)
-                cut(y, x+n, n)
-                cut(y, x+2*n, n)
-                cut(y+n, x+n, n)
-                cut(y+2*n, x+n, n)
-                cut(y+n, x+2*n, n)
-                cut(y+2*n, x+2*n, n)
+def cut(size, y=0, x=0):
+    for i in range(size):
+        for j in range(size):
+            if nums[y][x] != nums[y + i][x + j]:
+                div = size // 3
+                cut(div, y, x)
+                cut(div, y + div, x)
+                cut(div, y + div * 2, x)
+                cut(div, y, x + div)
+                cut(div, y + div, x + div)
+                cut(div, y + div * 2, x + div)
+                cut(div, y, x + div * 2)
+                cut(div, y + div, x + div * 2)
+                cut(div, y + div * 2, x + div * 2)
                 return
-    answer[paper[y][x]+1] += 1
+    ans[nums[y][x] + 1] += 1
     return
 
 
-cut(0, 0, n)
-print(*answer, sep="\n")
+n = int(input())
+nums = [list(map(int, input().split())) for _ in range(n)]
+ans = [0, 0, 0]
+
+cut(n)
+print(*ans, sep="\n")
