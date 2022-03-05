@@ -5,7 +5,9 @@ https://www.acmicpc.net/problem/1927
 
 from sys import stdin
 
-input = stdin.readline
+
+def input():
+    return stdin.readline().rstrip()
 
 
 def insert(item):
@@ -15,39 +17,39 @@ def insert(item):
         if heap[i // 2] > heap[i]:
             heap[i], heap[i // 2] = heap[i // 2], heap[i]
         else:
-            break
+            return
         i //= 2
+    return
 
 
 def remove():
-    if len(heap) > 1:
-        heap[1], heap[-1] = heap[-1], heap[1]
-        item = heap.pop(-1)
+    if len(heap) <= 1:
+        return 0
 
-        i = 1
-        while True:
-            left = i * 2
-            right = i * 2 + 1
-            smallest = i
+    heap[1], heap[-1] = heap[-1], heap[1]
+    item = heap.pop()
 
-            if left < len(heap) and heap[smallest] > heap[left]:
-                smallest = left
-            if right < len(heap) and heap[smallest] > heap[right]:
-                smallest = right
-            if smallest == i:
-                break
-            heap[i], heap[smallest] = heap[smallest], heap[i]
-            i = smallest
+    i = 1
+    while True:
+        left = i * 2
+        right = i * 2 + 1
+        smallest = i
 
-    else:
-        item = 0
+        if left < len(heap) and heap[smallest] > heap[left]:
+            smallest = left
+        if right < len(heap) and heap[smallest] > heap[right]:
+            smallest = right
+        if smallest == i:
+            break
+        heap[i], heap[smallest] = heap[smallest], heap[i]
+        i = smallest
 
     return item
 
 
 heap = [None]
 
-for _ in range(int(input())):
+for N in range(int(input())):
     x = int(input())
     if x == 0:
         print(remove())
