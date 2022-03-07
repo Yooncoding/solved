@@ -8,28 +8,27 @@ from sys import stdin
 input = stdin.readline
 
 n = int(input())
-pixel = []
-answer = ""
-
+matrix = []
+ans = []
 for _ in range(n):
-    pixel.append(list(map(int, input().rstrip())))
+    matrix.append(list(map(int, input().rstrip())))
 
 
-def compression(y, x, n):
-    global answer
-    for i in range(n):
-        for j in range(n):
-            if pixel[y][x] != pixel[y+i][x+j]:
-                answer += "("
-                compression(y, x, n//2)
-                compression(y, x+n//2, n//2)
-                compression(y+n//2, x, n//2)
-                compression(y+n//2, x+n//2, n//2)
-                answer += ")"
+def compression(size, y=0, x=0):
+    for i in range(size):
+        for j in range(size):
+            if matrix[y][x] != matrix[y + i][x + j]:
+                div = size // 2
+                ans.append("(")
+                compression(div, y, x)
+                compression(div, y, x + div)
+                compression(div, y + div, x)
+                compression(div, y + div, x + div)
+                ans.append(")")
                 return
-    answer += str(pixel[y][x])
+    ans.append(matrix[y][x])
     return
 
 
-compression(0, 0, n)
-print(answer)
+compression(n)
+print(*ans, sep="")
