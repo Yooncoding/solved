@@ -8,35 +8,29 @@ from collections import deque
 
 input = stdin.readline
 
-for _ in range(int(input())):
-    p = input()
+for T in range(int(input())):
+    p = input().rstrip()
     n = int(input())
-    x = input().rstrip()
+    arr = input().rstrip()
 
-    x = deque(map(int, x[1:-1].split(","))) if n != 0 else []
+    x = deque(map(int, arr[1:-1].split(","))) if n != 0 else []
 
-    reverse_flag, error_flag = False, False
-
-    for c in p:
-        if c == "R":
-            if reverse_flag == True:
-                reverse_flag = False
-                continue
-            reverse_flag = True
-        elif c == "D":
-            if len(x) == 0 or n == 0:
-                print('error')
-                error_flag = True
+    flag = False
+    ans = ""
+    for com in p:
+        if com == "R":
+            flag = True if not flag else False
+        if com == "D":
+            if len(x) == 0:
+                ans = "error"
                 break
-            if reverse_flag == True:
+            if flag:
                 x.pop()
-            elif reverse_flag == False:
+            else:
                 x.popleft()
-
-    if error_flag == True:
-        continue
-
-    if reverse_flag == True:
-        x.reverse()
-
-    print(str(list(x)).replace(' ', ''))
+    if ans == "error":
+        print(ans)
+    else:
+        if flag:
+            x.reverse()
+        print(str(list(x)).replace(' ', ''))
