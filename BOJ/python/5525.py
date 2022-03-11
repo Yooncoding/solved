@@ -7,22 +7,23 @@ from sys import stdin
 
 input = stdin.readline
 
-N = int(input())
-M = int(input())
-S = input().rstrip()
+n = int(input())
+m = int(input())
+s = input().rstrip()
 
 i = 1
-cnt = 0
-res = 0
-while i < M - 1:
-    if S[i-1] == "I" and S[i] == "O" and S[i+1] == "I":
+cnt, ans = 0, 0
+while i < m - 1:
+    if s[i] == "O" and s[i - 1] == "I" and s[i + 1] == "I":
         cnt += 1
-        if cnt == N:
-            res += 1
-            cnt -= 1
         i += 1
     else:
+        if cnt >= n:
+            ans += (cnt - n + 1)
         cnt = 0
     i += 1
 
-print(res)
+# 남은 cnt 처리
+if cnt >= n:
+    ans += (cnt - n + 1)
+print(ans)
