@@ -8,46 +8,49 @@ from collections import deque
 
 input = stdin.readline
 
-M, N, H = map(int, input().rsplit())
-box = []
+m, n, h = map(int, input().rsplit())
 
-for _ in range(H):
-    one = []
-    for _ in range(N):
-        one.append(list(map(int, input().rsplit())))
-    box.append(one)
+graph = []
+for i in range(h):
+    tgraph = []
+    for j in range(n):
+        tgraph.append(list(map(int, input().rsplit())))
+    graph.append(tgraph)
 
-answer = 0
 q = deque()
+for i in range(h):
+    for j in range(n):
+        for k in range(m):
+            if graph[i][j][k] == 1:
+                q.append((i, j, k))
 
-for k in range(H):
-    for j in range(N):
-        for i in range(M):
-            if box[k][j][i] == 1:
-                q.append([i, j, k])
 
-dx = [-1, 1, 0, 0, 0, 0]
-dy = [0, 0, -1, 1, 0, 0]
-dz = [0, 0, 0, 0, -1, 1]
+def bfs():
+    dz = [1, -1, 0, 0, 0, 0]
+    dy = [0, 0, 1, -1, 0, 0]
+    dx = [0, 0, 0, 0, 1, -1]
+    while len(q):
+        z, y, x = q.popleft()
+        for i in range(6):
+            nz = dz[i] + z
+            ny = dy[i] + y
+            nx = dx[i] + x
+            if 0 <= nz < h and 0 <= ny < n and 0 <= nx < m:
+                if graph[nz][ny][nx] == 0:
+                    q.append((nz, ny, nx))
+                    graph[nz][ny][nx] = graph[z][y][x] + 1
 
-while len(q) != 0:
-    x, y, z = q.popleft()
-    for i in range(6):
-        nx = x + dx[i]
-        ny = y + dy[i]
-        nz = z + dz[i]
 
-        if 0 <= nx < M and 0 <= ny < N and 0 <= nz < H:
-            if box[nz][ny][nx] == 0:
-                q.append([nx, ny, nz])
-                box[nz][ny][nx] = box[z][y][x] + 1
+bfs()
 
-for k in range(H):
-    for j in range(N):
-        answer = max(answer, max(box[k][j]))
-        for i in range(M):
-            if box[k][j][i] == 0:
+ans = 0
+for i in range(h):
+    for j in range(n):
+        for k in range(m):
+            if graph[i][j][k] == 0:
                 print(-1)
                 exit(0)
+            else:
+                ans = max(ans, graph[i][j][k])
 
-print(answer - 1)
+print(ans-1)
