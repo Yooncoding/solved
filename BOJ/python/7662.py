@@ -3,40 +3,42 @@
 https://www.acmicpc.net/problem/7662
 """
 
-import heapq
 from sys import stdin
+import heapq
 
 input = stdin.readline
 
-for _ in range(int(input())):
-    max_heap, min_heap = [], []
-    visited = [False for _ in range(1000001)]
-    for key in range(int(input())):
-        cmd = input().rsplit()
-        if cmd[0] == "I":
-            heapq.heappush(min_heap, (int(cmd[1]), key))
-            heapq.heappush(max_heap, (int(cmd[1]) * -1, key))
-            visited[key] = True
-        if cmd[0] == "D":
-            if cmd[1] == "-1":
-                while min_heap and not visited[min_heap[0][1]]:
-                    heapq.heappop(min_heap)
-                if min_heap:
-                    visited[min_heap[0][1]] = False
-                    heapq.heappop(min_heap)
-            if cmd[1] == "1":
-                while max_heap and not visited[max_heap[0][1]]:
-                    heapq.heappop(max_heap)
-                if max_heap:
-                    visited[max_heap[0][1]] = False
-                    heapq.heappop(max_heap)
+for T in range(int(input())):
+    id = 0
+    maxheapq, minheapq = [], []
+    visited = [False for _ in range(1000000)]
+    for id in range(int(input())):
+        comm = input().rsplit()
+        n = int(comm[1])
 
-    while min_heap and not visited[min_heap[0][1]]:
-        heapq.heappop(min_heap)
-    while max_heap and not visited[max_heap[0][1]]:
-        heapq.heappop(max_heap)
+        if comm[0] == "I":
+            heapq.heappush(maxheapq, (-n, id))
+            heapq.heappush(minheapq, (n, id))
+            id += 1
 
-    if min_heap and max_heap:
-        print(-max_heap[0][0], min_heap[0][0])
+        if comm[0] == "D":
+            if n == 1 and len(maxheapq):
+                m, i = heapq.heappop(maxheapq)
+                while visited[i] and len(maxheapq):
+                    m, i = heapq.heappop(maxheapq)
+                visited[i] = True
+            if n == -1 and len(minheapq):
+                m, i = heapq.heappop(minheapq)
+                while visited[i] and len(minheapq):
+                    m, i = heapq.heappop(minheapq)
+                visited[i] = True
+
+    while len(minheapq) and visited[minheapq[0][1]]:
+        heapq.heappop(minheapq)
+    while len(maxheapq) and visited[maxheapq[0][1]]:
+        heapq.heappop(maxheapq)
+
+    if minheapq and maxheapq:
+        print(-maxheapq[0][0], minheapq[0][0])
     else:
         print("EMPTY")
