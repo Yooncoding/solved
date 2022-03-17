@@ -9,62 +9,43 @@ from collections import deque
 input = stdin.readline
 
 
-def cmd_D(n):
-    d = n * 2
-    if d > 9999:
-        d %= 10000
-    return d
-
-
-def cmd_S(n):
-    s = n - 1
-    if n == 0:
-        s = 9999
-    return s
-
-
-def cmd_L(n):
-    l = ((n % 1000) * 10) + n // 1000
-    return l
-
-
-def cmd_R(n):
-    r = ((n % 10) * 1000) + n // 10
-    return r
-
-
-def bfs(ori, dest):
-    Q = deque()
-    Q.append(["", ori])
+def bfs(start, dest):
+    q = deque()
+    q.append((start, ""))
     visited = [False for _ in range(10000)]
-    while len(Q) != 0:
-        cmds, n = Q.popleft()
+    while len(q):
+        n, comm = q.popleft()
+        t = str(n)
+        t = (4 - len(t)) * "0" + t
+
         if n == dest:
-            break
+            print(comm)
+            return True
 
-        D = cmd_D(n)
-        if visited[D] == False:
-            visited[D] = True
-            Q.append([cmds + "D", D])
+        d = 2 * n % 10000
+        s = n - 1 if n != 0 else 9999
+        left = int(t[1] + t[2] + t[3] + t[0])
+        right = int(t[3] + t[0] + t[1] + t[2])
 
-        S = cmd_S(n)
-        if visited[S] == False:
-            visited[S] = True
-            Q.append([cmds + "S", S])
+        if not visited[d]:
+            q.append((d, comm + "D"))
+            visited[d] = True
 
-        L = cmd_L(n)
-        if visited[L] == False:
-            visited[L] = True
-            Q.append([cmds + "L", L])
+        if not visited[s]:
+            q.append((s, comm + "S"))
+            visited[s] = True
 
-        R = cmd_R(n)
-        if visited[R] == False:
-            visited[R] = True
-            Q.append([cmds + "R", R])
+        if not visited[left]:
+            q.append((left, comm + "L"))
+            visited[left] = True
 
-    return cmds
+        if not visited[right]:
+            q.append((right, comm + "R"))
+            visited[right] = True
+
+    return False
 
 
-for _ in range(int(input())):
-    A, B = map(int, input().rsplit())
-    print(bfs(A, B))
+for T in range(int(input())):
+    a, b = map(int, input().rsplit())
+    bfs(a, b)
