@@ -7,10 +7,11 @@ from sys import stdin
 
 input = stdin.readline
 
-dp = [1, 1, 1] + [0] * 97
+dp = [1, 1, 1, 2, 2] + [0] * 95
 
-for i in range(3, 100):
-    dp[i] = dp[i-3] + dp[i-2]
+for i in range(5, 100):
+    dp[i] = dp[i - 1] + dp[i - 5]
 
-for _ in range(int(input())):
-    print(dp[int(input())-1])
+for T in range(int(input())):
+    n = int(input())
+    print(dp[n - 1])
