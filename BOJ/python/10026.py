@@ -5,59 +5,62 @@ https://www.acmicpc.net/problem/10026
 
 from sys import stdin
 from collections import deque
-from copy import deepcopy
 
 input = stdin.readline
 
-N = int(input())
-original_cnt = 0
-changed_cnt = 0
-original_grid = []
-changed_grid = []
-visited = [[False for _ in range(N)] for _ in range(N)]
+n = int(input())
+graph = []
+
+dy = [-1, 0, 1, 0]
+dx = [0, 1, 0, -1]
+
+for _ in range(n):
+    graph.append(list(input().rstrip()))
 
 
-def bfs(x, y, grid):
+def bfs(y, x, color):
     q = deque()
-    q.append([x, y])
-    dx, dy = [-1, 1, 0, 0], [0, 0, -1, 1]
+    q.append((y, x))
+    visited[y][x] = True
 
-    while len(q) != 0:
-        x, y = q.popleft()
-        if visited[y][x] == True:
-            continue
+    while len(q):
+        y, x = q.popleft()
         for i in range(4):
-            nx, ny = x + dx[i], y + dy[i]
-            if 0 <= nx < N and 0 <= ny < N and grid[nx][ny] == grid[x][y]:
-                q.append([nx, ny])
-        visited[y][x] = True
+            ny = y + dy[i]
+            nx = x + dx[i]
+            if 0 <= ny < n and 0 <= nx < n and not visited[ny][nx]:
+                if graph[ny][nx] == color:
+                    q.append((ny, nx))
+                    visited[ny][nx] = True
 
     return True
 
 
-for _ in range(N):
-    original_grid.append(list(input().rstrip()))
-
-changed_grid = deepcopy(original_grid)
-
-for j in range(N):
-    for i in range(N):
-        if original_grid[i][j] == "G":
-            changed_grid[i][j] = "R"
-        if visited[j][i] == True:
+# 색약이 아닐 때
+cnt = 0
+visited = [[False for _ in range(n)] for _ in range(n)]
+for i in range(n):
+    for j in range(n):
+        if visited[i][j]:
             continue
-        bfs(i, j, original_grid)
-        original_cnt += 1
+        bfs(i, j, graph[i][j])
+        cnt += 1
 
-print(original_cnt, end=" ")
+print(cnt, end=" ")
 
-visited = [[False for _ in range(N)] for _ in range(N)]
+# "R" -> "G" 변환
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == "R":
+            graph[i][j] = "G"
 
-for j in range(N):
-    for i in range(N):
-        if visited[j][i] == True:
+# 색약일 때
+cnt = 0
+visited = [[False for _ in range(n)] for _ in range(n)]
+for i in range(n):
+    for j in range(n):
+        if visited[i][j]:
             continue
-        bfs(i, j, changed_grid)
-        changed_cnt += 1
-
-print(changed_cnt)
+        bfs(i, j, graph[i][j])
+        cnt += 1
+print(cnt)
