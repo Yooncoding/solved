@@ -8,43 +8,40 @@ from collections import defaultdict, deque
 
 input = stdin.readline
 
-N = int(input())
+n = int(input())
+graph = []
+routes = defaultdict(list)
+ans = [[0 for _ in range(n)] for _ in range(n)]
 
-matrix = []
-graph = defaultdict(list)
+for _ in range(n):
+    graph.append(list(map(int, input().rsplit())))
 
-for _ in range(N):
-    matrix.append(list(map(int, input().rsplit())))
-
-for i in range(N):
-    for j in range(N):
-        if matrix[i][j] == 1:
-            graph[i].append(j)
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == 1:
+            routes[i].append(j)
 
 
-def bfs(start, end):
+def bfs(start):
     q = deque()
     q.append(start)
-    visited = [False] * 100
-    while len(q) != 0:
-        t = q.popleft()
-
-        if visited[t] is True:
-            continue
-
-        for g in graph[t]:
-            if g == end:
-                return 1
-            if visited[g] is True:
+    visited = [False for _ in range(n)]
+    while len(q):
+        i = q.popleft()
+        for route in routes[i]:
+            if visited[route]:
                 continue
-            q.append(g)
-
-        visited[t] = True
-
-    return 0
+            q.append(route)
+            ans[start][route] = 1
+            visited[route] = True
 
 
-for i in range(N):
-    for j in range(N):
-        print(bfs(i, j), end=" ")
+for i in range(n):
+    for j in range(n):
+        if ans[i][j] == 0:
+            bfs(i)
+
+for i in range(n):
+    for j in range(n):
+        print(ans[i][j], end=" ")
     print()

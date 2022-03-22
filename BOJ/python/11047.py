@@ -7,18 +7,19 @@ from sys import stdin
 
 input = stdin.readline
 
-N, K = map(int, input().rsplit())
-coin = []
+n, k = map(int, input().rsplit())
+coins = []
+for _ in range(n):
+    coins.append(int(input()))
+coins = coins[::-1]
+
 cnt = 0
-
-for _ in range(N):
-    coin.append(int(input()))
-
-while K != 0:
-    b = K // coin[-1]
-    if b > 0:
-        cnt += b
-        K = K % coin[-1]
-    coin.pop()
+for coin in coins:
+    if k == 0:
+        break
+    if coin > k:
+        continue
+    cnt += (k // coin)
+    k %= coin
 
 print(cnt)
