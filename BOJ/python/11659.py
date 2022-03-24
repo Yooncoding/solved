@@ -9,14 +9,14 @@ input = stdin.readline
 
 n, m = map(int, input().rsplit())
 nums = list(map(int, input().rsplit()))
-prefix_sums = [0]
 
-temp = 0
-for num in nums:
-    temp += num
-    prefix_sums.append(temp)
-
+for i in range(1, n):
+    nums[i] += nums[i - 1]
 
 for _ in range(m):
     i, j = map(int, input().rsplit())
-    print(prefix_sums[j]-prefix_sums[i-1])
+    if i == 1:
+        print(nums[j-1])
+        continue
+
+    print(nums[j-1] - nums[i-2])
