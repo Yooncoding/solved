@@ -4,35 +4,40 @@ https://www.acmicpc.net/problem/11724
 """
 
 from sys import stdin
-from collections import defaultdict, deque
+from collections import deque, defaultdict
 
 input = stdin.readline
 
+graph = defaultdict(list)
+n, m = map(int, input().rsplit())
+visited = [False for _ in range(n)]
 
-def bfs(k):
+for _ in range(m):
+    u, v = map(int, input().rsplit())
+    graph[u-1].append(v-1)
+    graph[v-1].append(u-1)
+
+
+def bfs(x):
     q = deque()
-    q.append(k)
-    while len(q) != 0:
-        t = q.popleft()
-        if visited[t] == False:
-            for p in link[t]:
-                q.append(p)
-            visited[t] = True
+    q.append(x)
+    visited[x] = True
+    while len(q):
+        x = q.popleft()
+        for v in graph[x]:
+            if visited[v]:
+                continue
+            q.append(v)
+            visited[v] = True
+
+    return
 
 
-N, M = map(int, input().split())
-link = defaultdict(list)
-visited = [False] + [False] * 1000
 cnt = 0
-
-for _ in range(M):
-    u, v = map(int, input().split())
-    link[u].append(v)
-    link[v].append(u)
-
-for k in range(1, N + 1):
-    if visited[k] == False:
-        bfs(k)
-        cnt += 1
+for i in range(n):
+    if visited[i]:
+        continue
+    bfs(i)
+    cnt += 1
 
 print(cnt)
