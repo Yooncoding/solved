@@ -4,63 +4,66 @@ https://www.acmicpc.net/problem/14500
 """
 
 from sys import stdin
+from itertools import combinations
 
 input = stdin.readline
 
-max_v = 0
-paper = []
 n, m = map(int, input().rsplit())
-visited = [[False for _ in range(m)]for _ in range(n)]
+ground = []
 for _ in range(n):
-    paper.append(list(map(int, input().rsplit())))
+    ground.append(list(map(int, input().rsplit())))
+
+dy, dx = [-1, 0, 1, 0], [0, 1, 0, -1]
+visited = [[False for _ in range(m)] for _ in range(n)]
+
+max_v = max(map(max, ground))
+ans = 0
 
 
-def dfs(x, y, tsum, cnt):
-    global max_v
+def dfs(y, x, cnt, tsum):
+    global ans
+    # global max_v
 
-    d = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    if ans >= tsum + (4-cnt) * max_v:
+        return
 
     if cnt == 4:
-        max_v = max(max_v, tsum)
+        # ans가 함수안에서 변경되기 때문에 global 필요, max_v는 global 불필요
+        ans = max(ans, tsum)
         return
 
     for i in range(4):
-        nx = x + d[i][0]
-        ny = y + d[i][1]
-
-        if 0 <= nx < m and 0 <= ny < n and not visited[ny][nx]:
+        ny = y + dy[i]
+        nx = x + dx[i]
+        if 0 <= ny < n and 0 <= nx < m and not visited[ny][nx]:
             visited[ny][nx] = True
-            dfs(nx, ny, tsum + paper[ny][nx], cnt + 1)
+            dfs(ny, nx, cnt+1, tsum+ground[ny][nx])
             visited[ny][nx] = False
 
+    return
 
-def tdfs(x, y, tsum):
-    global max_v
 
-    d = [(1, 0), (0, -1), (-1, 0), (0, 1)]
-    for i in range(4):
-        flag = False
-        for j in range(4):
-            if i == j:
-                continue
-            nx = x + d[j][0]
-            ny = y + d[j][1]
-            if 0 <= nx < m and 0 <= ny < n:
-                tsum += paper[ny][nx]
-            else:
-                flag = True
-                break
-        if not flag:
-            max_v = max(max_v, tsum)
-        tsum = paper[y][x]
+def bfs(y, x):
+    global ans
+
+    for combi in combinations(range(4), 3):
+        tsum = ground[y][x]
+        for i in combi:
+            ny = y + dy[i]
+            nx = x + dx[i]
+            if 0 <= ny < n and 0 <= nx < m:
+                tsum += ground[ny][nx]
+        ans = max(ans, tsum)
+
+    return
 
 
 for i in range(n):
     for j in range(m):
         visited[i][j] = True
-        dfs(j, i, paper[i][j], 1)
+        dfs(i, j, 1, ground[i][j])
         visited[i][j] = False
 
-        tdfs(j, i, paper[i][j])
+        bfs(i, j)
 
-print(max_v)
+print(ans)
