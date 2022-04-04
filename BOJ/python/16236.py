@@ -7,55 +7,46 @@ from sys import stdin
 
 input = stdin.readline
 
-space = []
-N = int(input())
-for _ in range(N):
-    space.append(list(map(int, input().rsplit())))
+n = int(input())
+area = []
+for _ in range(n):
+    area.append(list(map(int, input().rsplit())))
+
+dy, dx = [-1, 0, 0, 1], [0, -1, 1, 0]
 
 
-def go(y, x, size, temp_size, cnt):
-    q = []
-    q.append([0, [y, x]])
-    visited = [[False for _ in range(N)] for _ in range(N)]
-    dx, dy = [0, -1, 1, 0], [-1, 0, 0, 1]
+def bfs(y, x, size, ans, cnt):
+    q = [((y, x), 0)]
+    visited = [[False for _ in range(n)] for _ in range(n)]
+    area[y][x] = 0
 
-    space[y][x] = 0
-
-    if temp_size == size:
-        temp_size = 0
-        size += 1
-
-    while len(q) != 0:
-        q.sort(key=lambda x: (x[0], x[1][0], x[1][1]))
-        n, point = q.pop(0)
-        y, x = point
-
-        if visited[y][x] is True:
+    while len(q):
+        q.sort(key=lambda x: (x[1], x[0][0], x[0][1]))
+        (y, x), d = q.pop(0)
+        if visited[y][x]:
             continue
+        if area[y][x] != 0 and area[y][x] < size:
+            area[y][x] = 0
+            ans += d
+            cnt += 1
+            if cnt == size:
+                cnt = 0
+                size += 1
+                # 먹은 위치에서 너비 우선 탐색 재시작
+            return bfs(y, x, size, ans, cnt)
 
-        if space[y][x] < size and space[y][x] != 0:
-            space[y][x] = 0
-            temp_size += 1
-            cnt += n
-            return go(y, x, size, temp_size, cnt)
-
-        for m in range(4):
-            nx, ny = x + dx[m], y + dy[m]
-            if 0 <= nx < N and 0 <= ny < N and space[ny][nx] <= size:
-                q.append([n + 1, [ny, nx]])
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < n and 0 <= nx < n and area[ny][nx] <= size:
+                q.append(((ny, nx), d + 1))
 
         visited[y][x] = True
+    return ans
 
-    return cnt
 
-
-answer = 0
-
-for i in range(N):
-    for j in range(N):
-        if space[j][i] == 9:
-            y, x = j, i
-
-answer = go(y, x, 2, 0, 0)  # y, x, size, temp_size, cnt
-
-print(answer)
+for i in range(n):
+    for j in range(n):
+        if area[i][j] == 9:
+            y, x = i, j
+ans = bfs(y, x, 2, 0, 0)
+print(ans)

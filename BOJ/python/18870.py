@@ -8,11 +8,10 @@ from sys import stdin
 input = stdin.readline
 
 n = int(input())
-nums = list(map(int, input().rsplit()))
-sorted_nums = list(set(nums))
-sorted_nums.sort()
+x = list(map(int, input().rsplit()))
+sorted_x = sorted(list(set(x)))
 
-points = {sorted_nums[i]: i for i in range(len(sorted_nums))}
+cnt = {sorted_x[i]: i for i in range(len(sorted_x))}
 
-for i in nums:
-    print(points[i], end=" ")
+for i in x:
+    print(cnt[i], end=" ")
