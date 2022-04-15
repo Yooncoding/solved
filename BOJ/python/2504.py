@@ -3,59 +3,77 @@
 https://www.acmicpc.net/problem/2504
 """
 
-import sys
+from sys import stdin
 
+input = stdin.readline
 
-def checkBracket(S):
-    stack = []
-    match = {")": "(", "]": "["}
-    for c in S:
-        if c in "([":
-            stack.append(c)
-        elif c in match:
-            if len(stack) == 0:
-                return False
-            else:
-                t = stack.pop()
-                if t != match[c]:
-                    return False
-    return len(stack) == 0
+brackets = list(input().rstrip())  # (()[[]])
+stack = []
+ans = 0
 
+for bracket in brackets:
+    # opened bracket
+    if bracket in "([":
+        stack.append(bracket)
 
-def solution(S):
-    stack = []
-    for c in S:
-        if c in "([":
-            stack.append(c)
-        elif c == ")" and stack[-1] == "(":
+    # closed bracket
+    else:
+        if len(stack) == 0:
+            ans = 0
+            break
+
+        if bracket == ")" and stack[-1] == "(":
             stack.pop()
             stack.append(2)
-        elif c == ")" and type(stack[-1]) == int:
+
+        elif bracket == ")" and type(stack[-1]) == int:
             temp = 0
-            while stack[-1] != "(":
-                temp += stack.pop()
-                if len(stack) == 0:
+            processing = True
+            while len(stack) != 0:
+                v = stack.pop()
+                if type(v) == int:
+                    temp += v
+                elif v == "(":
+                    stack.append(2*temp)
                     break
-            stack.pop()
-            temp *= 2
-            stack.append(temp)
-        elif c == "]" and stack[-1] == "[":
+                else:
+                    processing = False
+                    break
+            if not processing:
+                ans = 0
+                break
+
+        elif bracket == "]" and stack[-1] == "[":
             stack.pop()
             stack.append(3)
-        elif c == "]" and type(stack[-1]) == int:
+
+        elif bracket == "]" and type(stack[-1]) == int:
             temp = 0
-            while stack[-1] != "[":
-                temp += stack.pop()
-                if len(stack) == 0:
+            processing = True
+            while len(stack) != 0:
+                v = stack.pop()
+                if type(v) == int:
+                    temp += v
+                elif v == "[":
+                    stack.append(3*temp)
                     break
-            stack.pop()
-            temp *= 3
-            stack.append(temp)
-    return sum(stack)
+                else:
+                    processing = False
+                    break
+            if not processing:
+                ans = 0
+                break
+
+        else:
+            ans = 0
+            break
 
 
-data = sys.stdin.readline().rstrip()
-if checkBracket(data):
-    print(solution(data))
-else:
-    print(0)
+for v in stack:
+    if type(v) != int:
+        ans = 0
+        break
+    else:
+        ans += v
+
+print(ans)
