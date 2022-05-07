@@ -1,5 +1,6 @@
 from itertools import combinations
 
+
 def isPrime(n):
     if n == 1 or n == 0:
         return False
