@@ -4,26 +4,24 @@ https://www.acmicpc.net/problem/2109
 """
 
 from sys import stdin
+import heapq
 
 input = stdin.readline
 
 n = int(input())
 schedule = []
-final = 0
-
 for _ in range(n):
     pay, day = map(int, input().rsplit())
-    final = max(final, day)
     schedule.append((pay, day))
 
-schedule.sort(key=lambda x: (x[0], x[1]))
+schedule.sort(key=lambda x: x[1])
 
-work_table = [0 for _ in range(final+1)]
-while len(schedule):
-    pay, day = schedule.pop()
-    for i in range(day, 0, -1):
-        if work_table[i] == 0:
-            work_table[i] = pay
-            break
+work_table = []
+for pay, day in schedule:
+    if len(work_table) < day:
+        heapq.heappush(work_table, pay)
+    else:
+        heapq.heappush(work_table, pay)
+        heapq.heappop(work_table)
 
 print(sum(work_table))
