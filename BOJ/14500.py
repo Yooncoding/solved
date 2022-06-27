@@ -3,67 +3,50 @@
 https://www.acmicpc.net/problem/14500
 """
 
-from sys import stdin
-from itertools import combinations
+# input
+n, m = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
 
-input = stdin.readline
-
-n, m = map(int, input().rsplit())
-ground = []
-for _ in range(n):
-    ground.append(list(map(int, input().rsplit())))
-
-dy, dx = [-1, 0, 1, 0], [0, 1, 0, -1]
+dr, dc = [-1, 1, 0, 0], [0, 0, -1, 1]  # 상 하 좌 우
 visited = [[False for _ in range(m)] for _ in range(n)]
 
-max_v = max(map(max, ground))
-ans = 0
+
+def in_range(r, c):
+    return 0 <= r < n and 0 <= c < m
 
 
-def dfs(y, x, cnt, tsum):
+def dfs(r, c, s, cnt):
     global ans
-    # global max_v
-
-    if ans >= tsum + (4-cnt) * max_v:
+    # 가지치기
+    # 행렬에서 가장 큰 수 * 남은 횟수 + 현재 까지 합이 현재까지의 최대값보다 작으면 이후 시행할 필요 없음
+    if max_value_in_grid * (4-cnt) + s <= ans:
         return
 
     if cnt == 4:
-        # ans가 함수안에서 변경되기 때문에 global 필요, max_v는 global 불필요
-        ans = max(ans, tsum)
+        ans = max(s, ans)
         return
 
     for i in range(4):
-        ny = y + dy[i]
-        nx = x + dx[i]
-        if 0 <= ny < n and 0 <= nx < m and not visited[ny][nx]:
-            visited[ny][nx] = True
-            dfs(ny, nx, cnt+1, tsum+ground[ny][nx])
-            visited[ny][nx] = False
+        nr, nc = r + dr[i], c + dc[i]
+        if in_range(nr, nc) and not visited[nr][nc]:
+            if cnt == 2:
+                visited[nr][nc] = True
+                dfs(r, c, s + grid[nr][nc], cnt + 1)
+                visited[nr][nc] = False
+
+            visited[nr][nc] = True
+            dfs(nr, nc, s + grid[nr][nc], cnt+1)
+            visited[nr][nc] = False
 
     return
 
 
-def bfs(y, x):
-    global ans
-
-    for combi in combinations(range(4), 3):
-        tsum = ground[y][x]
-        for i in combi:
-            ny = y + dy[i]
-            nx = x + dx[i]
-            if 0 <= ny < n and 0 <= nx < m:
-                tsum += ground[ny][nx]
-        ans = max(ans, tsum)
-
-    return
-
-
+ans = 0
+max_value_in_grid = max(map(max, grid))  # 행렬에서 가장 큰 수
 for i in range(n):
     for j in range(m):
         visited[i][j] = True
-        dfs(i, j, 1, ground[i][j])
+        dfs(i, j, grid[i][j], 1)
         visited[i][j] = False
-
-        bfs(i, j)
 
 print(ans)
