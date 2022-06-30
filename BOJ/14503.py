@@ -3,42 +3,48 @@
 https://www.acmicpc.net/problem/14503
 """
 
-from sys import stdin
 from collections import deque
 
-input = stdin.readline
+# input
+n, m = map(int, input().split())
+r, c, dir_num = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
 
-n, m = map(int, input().rsplit())
-r, c, d = map(int, input().rsplit())
-graph = [list(map(int, input().rsplit())) for _ in range(n)]
+dr, dc = [-1, 0, 1, 0], [0, 1, 0, -1]
 
 
-def bfs(r, c, d):
+def bfs(r, c):
+    global dir_num
     cnt = 1
-    graph[r][c] = 2
-    dy = [-1, 0, 1, 0]
-    dx = [0, 1, 0, -1]
     q = deque()
     q.append([r, c])
+    grid[r][c] = 2
     while len(q):
-        y, x = q.popleft()
-        for i in range(4):
-            d = (d-1) % 4
-            ny = y + dy[d]
-            nx = x + dx[d]
-            if 0 <= ny < n and 0 <= nx < m and graph[ny][nx] == 0:
-                graph[ny][nx] = 2
+        r, c = q.popleft()
+        for _ in range(4):
+            dir_num = (dir_num + 3) % 4
+            nr, nc = r + dr[dir_num], c + dc[dir_num]
+            if grid[nr][nc] == 0:
+                q.append([nr, nc])
+                grid[nr][nc] = 2
                 cnt += 1
-                q.append([ny, nx])
                 break
         else:
-            ny = y + dy[(d-2) % 4]
-            nx = x + dx[(d-2) % 4]
-            if 0 <= ny < n and 0 <= nx < m and graph[ny][nx] != 1:
-                q.append([ny, nx])
-                continue
-            print(cnt)
-            return
+            temp_dir_num = (dir_num + 2) % 4
+            nr, nc = r + dr[temp_dir_num], c + dc[temp_dir_num]
+            if grid[nr][nc] == 1:
+                return cnt
+
+            else:
+                if grid[nr][nc] == 0:
+                    q.append([nr, nc])
+                    grid[nr][nc] = 2
+                    cnt += 1
+                else:
+                    q.append([nr, nc])
+
+    return cnt
 
 
-bfs(r, c, d)
+ans = bfs(r, c)
+print(ans)
