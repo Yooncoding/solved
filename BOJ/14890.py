@@ -7,85 +7,37 @@ https://www.acmicpc.net/problem/14890
 N, L = map(int, input().split())
 grid = [list(map(int, input().split())) for _ in range(N)]
 
+
+def check(route):
+    made = [False for _ in range(N)]
+    for i in range(N-1):
+        if abs(route[i] - route[i+1]) > 1:
+            return False
+
+        elif route[i] > route[i+1]:
+            for j in range(1, L+1):
+                if i + j >= N or route[i+1] != route[i+j]:
+                    return False
+                made[i+j] = True
+
+        elif route[i] < route[i+1]:
+            for j in range(L):
+                if i - j < 0 or made[i-j] or route[i] != route[i-j]:
+                    return False
+                made[i-j] = True
+
+    return True
+
+
 ans = 0
 for i in range(N):
-    flag = False
-    visited = [False for _ in range(N)]
-    for j in range(N-1):
-        if abs(grid[i][j] - grid[i][j+1]) > 1:
-            flag = True
-            break
-
-        if grid[i][j] == grid[i][j+1]:
-            pass
-
-        elif grid[i][j] > grid[i][j+1]:
-            for k in range(1, L+1):
-                if j + k >= N:
-                    flag = True
-                    break
-
-                visited[j + k] = True
-                if grid[i][j + 1] != grid[i][j + k]:
-                    flag = True
-                    break
-
-        elif grid[i][j] < grid[i][j+1]:
-            for k in range(L):
-                if j - k < 0:
-                    flag = True
-                    break
-
-                if visited[j-k]:
-                    flag = True
-                    break
-
-                visited[j-k] = True
-                if grid[i][j] != grid[i][j-k]:
-                    flag = True
-                    break
-
-    if not flag:
+    check_route = [grid[i][j] for j in range(N)]
+    if check(check_route):
         ans += 1
 
 for j in range(N):
-    flag = False
-    visited = [False for _ in range(N)]
-    for i in range(N-1):
-        if abs(grid[i][j] - grid[i+1][j]) > 1:
-            flag = True
-            break
-
-        if grid[i][j] == grid[i+1][j]:
-            pass
-
-        elif grid[i][j] > grid[i+1][j]:
-            for k in range(1, L+1):
-                if i + k >= N:
-                    flag = True
-                    break
-
-                visited[i + k] = True
-                if grid[i+1][j] != grid[i+k][j]:
-                    flag = True
-                    break
-
-        elif grid[i][j] < grid[i+1][j]:
-            for k in range(L):
-                if i - k < 0:
-                    flag = True
-                    break
-
-                if visited[i-k]:
-                    flag = True
-                    break
-
-                visited[i-k] = True
-                if grid[i][j] != grid[i-k][j]:
-                    flag = True
-                    break
-
-    if not flag:
+    check_route = [grid[i][j] for i in range(N)]
+    if check(check_route):
         ans += 1
 
 print(ans)
