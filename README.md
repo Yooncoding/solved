@@ -1,5 +1,8 @@
 # solved-with-python
 
+[![Solved.ac
+프로필](http://mazassumnida.wtf/api/generate_badge?boj=ycj123z)](https://solved.ac/ycj123z)
+
 - 하루당 1커밋을 원칙으로 한다.
 - 커밋 메시지는 그날의 날짜를 쓴다.
 
