@@ -26,16 +26,18 @@ def get_next_city():
 visited = [False for _ in range(n+1)]
 distance = [1e9 for _ in range(n+1)]
 
-distance[origin] = 0
+def dijkstra(start):
+    distance[start] = 0
 
-for i in range(n):
-    city = get_next_city()
-    
-    if city == 0:
-        break
-    
-    visited[city] = True
-    for ncity, cost in routes[city]:
-        distance[ncity] = min(cost + distance[city], distance[ncity])
+    for i in range(n):
+        city = get_next_city()
 
+        if city == 0:
+            break
+
+        visited[city] = True
+        for ncity, cost in routes[city]:
+            distance[ncity] = min(cost + distance[city], distance[ncity])
+
+dijkstra(origin)
 print(distance[dest])
