@@ -1,24 +1,12 @@
 def solution(word):
-    global seq
-    result = {}
-    seq = 0
-    
-    def dfs(cur, cnt):
-        global seq
-        
-        if cnt > 5:
-            return
-        
-        result[cur] = seq
-        seq += 1
-        
-        for c in "AEIOU":
-            dfs(cur+c, cnt+1)
-    
-        return
-    
-    
-    dfs("", 0)
-    answer = result[word]
-        
+    answer = 0
+    dict = {'A':1, 'E':2, 'I':3, 'O':4, 'U':5}
+    n = len(word)
+    answer = n
+
+    for i in range(n):
+        temp = 0
+        for j in range(4-i, -1, -1):
+            temp += 5**j
+        answer += temp*(dict[word[i]]-1)
     return answer
